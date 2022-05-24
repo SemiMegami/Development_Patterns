@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IBikeState
 {
-    void Handle();
+    void Handle(BikeController controller);
 }
