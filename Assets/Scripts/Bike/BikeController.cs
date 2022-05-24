@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BikeController : MonoBehaviour
 {
+    private string _status;
     public float maxSpeed = 2.0f;
     public float turnDistance = 2.0f;
     public float CurrentSpeed { get; set; }
@@ -20,24 +21,39 @@ public class BikeController : MonoBehaviour
         _bikeStateContext.Transtiion(_stopState);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        
+        RaceEventBus.Subscribe(RaceEventType.START, StartBike);
+        RaceEventBus.Subscribe(RaceEventType.STOP, StopBike);
+    }
+    private void OnDisable()
+    {
+        RaceEventBus.UnSubscribe(RaceEventType.START, StartBike);
+        RaceEventBus.UnSubscribe(RaceEventType.STOP, StopBike);
     }
 
     public void StartBike()
     {
+        _status = "Started";
         _bikeStateContext.Transtiion(_startState);
     }
-    public void Stopike()
+    public void StopBike()
     {
+        _status = "Stoped";
         _bikeStateContext.Transtiion(_stopState);
     }
+
+
 
     public void Turn(Direction direction)
     {
         CurrentTurnDirection = direction;
         _bikeStateContext.Transtiion(_turnState);
+    }
+
+    private void OnGUI()
+    {
+        GUI.color = Color.green;
+        GUI.Label(new Rect(10, 60, 200, 20), "BIKE STATUS: " + _status);
     }
 }
