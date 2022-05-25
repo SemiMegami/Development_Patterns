@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public class BikeStateContext 
 {
@@ -17,6 +14,7 @@ public class BikeStateContext
     }
     public void Transtiion(IBikeState bikeState)
     {
+        CurrentState = bikeState;
         bikeState.Handle(_bikeController);
     }
 }

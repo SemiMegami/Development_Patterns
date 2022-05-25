@@ -11,7 +11,7 @@ public class ClientEventBus : MonoBehaviour
         gameObject.AddComponent<HUDController>();
 
         gameObject.AddComponent<CountdownTimer>();
-        gameObject.AddComponent<BikeController>();
+    
         _isButtonEnabled = true;
     }
 

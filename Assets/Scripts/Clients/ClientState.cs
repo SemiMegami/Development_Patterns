@@ -30,5 +30,9 @@ public class ClientState : MonoBehaviour
         {
             _bikeController.StopBike();
         }
+        if (GUILayout.Button("Toggle Turbo"))
+        {
+            _bikeController.ToggleTurbo();
+        }
     }
 }
