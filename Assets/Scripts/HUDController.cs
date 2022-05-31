@@ -25,7 +25,7 @@ public class HUDController : Observer
 
     void OnGUI()
     {
-        GUILayout.BeginArea(new Rect(50, 50, 100, 200));
+        GUILayout.BeginArea(new Rect(0, 100, 100, 200));
         GUILayout.BeginHorizontal("box");
         GUILayout.Label("Health: " + _currentHealth);
         GUILayout.EndHorizontal();

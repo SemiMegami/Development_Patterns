@@ -14,7 +14,15 @@ public class ClientObserver : MonoBehaviour
     // Update is called once per frame
     void OnGUI()
     {
-        if(GUILayout.Button("Damage Bike"))
+        if (GUILayout.Button("Start Bike"))
+        {
+            if (_bikeController)
+            {
+                _bikeController.StartBike();
+            }
+
+        }
+        if (GUILayout.Button("Damage Bike"))
         {
             if (_bikeController)
             {

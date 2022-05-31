@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BikeController : Subject
+public class BikeController : Subject,IBikeElement
 {
 
     [SerializeField]
@@ -22,13 +22,12 @@ public class BikeController : Subject
     private CameraController _cameraController;
     private string _status;
     public float maxSpeed = 2.0f;
-    public float turboSpeed = 3.0f;
     public float turnDistance = 2.0f;
     public float CurrentSpeed { get; set; }
     public Direction CurrentTurnDirection { get; private set; }
-    private IBikeState _startState, _stopState, _turnState, _turboState;
+    private IBikeState _startState, _stopState, _turnState;
     private BikeStateContext _bikeStateContext;
-
+    public List<IBikeElement> _bikeElements = new List<IBikeElement>();
     private void Awake()
     {
         _hudController = gameObject.AddComponent<HUDController>();
@@ -42,8 +41,14 @@ public class BikeController : Subject
         _startState = gameObject.AddComponent<BikeStartState>();
         _stopState = gameObject.AddComponent<BikeStopState>();
         _turnState = gameObject.AddComponent<BikeTurnState>();
-        _turboState = gameObject.AddComponent<BikeTurboState>();
+
+        
         _bikeStateContext.Transtiion(_stopState);
+
+        _bikeElements.Add(gameObject.AddComponent<BikeShield>());
+        _bikeElements.Add(gameObject.AddComponent<BikeWeapon>());
+        _bikeElements.Add(gameObject.AddComponent<BikeEngine>());
+
         StartEngine();
     }
 
@@ -82,17 +87,11 @@ public class BikeController : Subject
 
     public void StartBike()
     {
-        IsTurboOn = false;
         _status = "Started";
         _bikeStateContext.Transtiion(_startState);
     }
 
-    public void TurboBike()
-    {
-        IsTurboOn = true;
-        _status = "Turbo";
-        _bikeStateContext.Transtiion(_turboState);
-    }
+
     public void StopBike()
     {
         _status = "Stoped";
@@ -105,14 +104,6 @@ public class BikeController : Subject
         {
             IsTurboOn = !IsTurboOn;
             Debug.Log("Turbo Active: " + IsTurboOn.ToString());
-            if (IsTurboOn)
-            {
-                TurboBike();
-            }
-            else
-            {
-                StartBike();
-            }
         }
         NotifyObservers();
     }
@@ -132,21 +123,25 @@ public class BikeController : Subject
     {
         health -= amount;
         IsTurboOn = false;
-        StartBike();
         NotifyObservers();
         if (health < 0)
         {
             Destroy(gameObject);
         }
     }
-    private void NotifyObservers()
-    {
-
-    }
-
+  
     private void OnGUI()
     {
+
         GUI.color = Color.green;
-        GUI.Label(new Rect(10, 60, 200, 20), "BIKE STATUS: " + _status);
+        GUI.Label(new Rect(10, 160, 200, 20), "BIKE STATUS: " + _status);
+    }
+
+    public void Accept(IVisitor visitor)
+    {
+        foreach (IBikeElement element in _bikeElements)
+        {
+            element.Accept(visitor);
+        }
     }
 }
